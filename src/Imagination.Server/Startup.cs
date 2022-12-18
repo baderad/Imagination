@@ -1,3 +1,4 @@
+using Imagination.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,46 +7,45 @@ using Microsoft.Extensions.Hosting;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-namespace Imagination
+namespace Imagination;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        Configuration = configuration;
+    }
 
-        private IConfiguration Configuration { get; }
+    private IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddOpenTelemetryTracing(builder => builder
-                .SetResourceBuilder(ResourceBuilder
-                    .CreateDefault()
-                    .AddEnvironmentVariableDetector()
-                    .AddTelemetrySdk()
-                    .AddService("Imagination"))
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddJaegerExporter()
-                .AddSource(Program.Telemetry.Name));
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddOpenTelemetryTracing(builder => builder
+            .SetResourceBuilder(ResourceBuilder
+                .CreateDefault()
+                .AddEnvironmentVariableDetector()
+                .AddTelemetrySdk()
+                .AddService("Imagination"))
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddJaegerExporter()
+            .AddSource(Program.Telemetry.Name));
 
-            services.AddControllers();
-        }
+        services.AddControllers();
+    }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+            app.UseDeveloperExceptionPage();
 
-            app.UseRouting();
+        app.UseRouting();
 
-            app.UseAuthorization();
+        app.UseAuthorization();
+        
+        app.UseExceptionHandling();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-        }
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }
 }

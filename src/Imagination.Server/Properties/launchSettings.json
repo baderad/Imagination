@@ -3,7 +3,6 @@
   "profiles": {
     "Imagination.Server": {
       "commandName": "Project",
-      "dotnetRunMessages": "true",
       "launchBrowser": false,
       "hotReloadProfile": "aspnetcore",
       "launchUrl": "swagger",

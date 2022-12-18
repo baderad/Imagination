@@ -1,0 +1,14 @@
+﻿version: '3.7'
+
+services:
+  tests:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: build
+    command:
+      - /bin/sh
+      - -c
+      - dotnet test src/Imagination.Tests/Imagination.Tests.csproj --logger trx --results-directory /var/temp
+    volumes:
+      - /opt/vsts/work/_temp:/var/temp

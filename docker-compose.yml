@@ -1,12 +1,14 @@
-version: '2.2'
+version: '3.7'
 
 services:
 
-  your_service:
-    # Please add your service here and serve it on port 5000.
+  imagination:
     build:
+      context: .  
       dockerfile: Dockerfile
-      context: .
+      target: final-imagination
+    ports:
+      - "5000:80"
     mem_limit: 512m
     mem_reservation: 512m
     depends_on:
